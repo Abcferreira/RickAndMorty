@@ -1,4 +1,11 @@
-package com.example.rickandmorty
+package com.example.rickandmorty.data.mappers
+
+import com.example.rickandmorty.data.remote.response.CharacterResponse
+import com.example.rickandmorty.data.remote.response.LocationResponse
+import com.example.rickandmorty.data.remote.response.OriginResponse
+import com.example.rickandmorty.domain.model.CharacterEntity
+import com.example.rickandmorty.domain.model.LocationEntity
+import com.example.rickandmorty.domain.model.OriginEntity
 
 fun List<CharacterResponse>.mapToDomain() = map { it.mapToDomain() }
 

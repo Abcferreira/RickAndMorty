@@ -13,6 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.rickandmorty.presentation.characterdetails.ui.CharacterDetailScreen
+import com.example.rickandmorty.presentation.characters.ui.CharacterListScreen
+import com.example.rickandmorty.presentation.characters.viewmodel.CharacterViewModel
+import com.example.rickandmorty.presentation.characters.ui.LoadingAnimation
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

@@ -1,5 +1,8 @@
 package com.example.rickandmorty
 
+import com.example.rickandmorty.data.remote.ApiService
+import com.example.rickandmorty.data.repository.CharacterRepository
+import com.example.rickandmorty.presentation.characters.viewmodel.CharacterViewModel
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module

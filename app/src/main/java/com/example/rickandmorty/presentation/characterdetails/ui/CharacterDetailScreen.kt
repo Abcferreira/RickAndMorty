@@ -1,4 +1,4 @@
-package com.example.rickandmorty
+package com.example.rickandmorty.presentation.characterdetails.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.rickandmorty.domain.model.CharacterEntity
 
 @Composable
 fun CharacterDetailScreen(character: CharacterEntity) {

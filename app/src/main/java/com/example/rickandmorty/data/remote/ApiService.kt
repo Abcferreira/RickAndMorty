@@ -1,5 +1,7 @@
-package com.example.rickandmorty
+package com.example.rickandmorty.data.remote
 
+import com.example.rickandmorty.data.remote.response.ApiResponse
+import com.example.rickandmorty.data.remote.response.CharacterResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

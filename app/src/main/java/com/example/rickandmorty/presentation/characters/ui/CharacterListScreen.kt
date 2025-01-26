@@ -1,4 +1,4 @@
-package com.example.rickandmorty
+package com.example.rickandmorty.presentation.characters.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,9 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.rickandmorty.domain.model.CharacterEntity
+import com.example.rickandmorty.presentation.characters.viewmodel.CharacterViewModel
 
 @Composable
 fun CharacterListScreen(characterViewModel: CharacterViewModel, navController: NavController) {
@@ -100,6 +103,8 @@ fun CharacterCard(character: CharacterEntity, onClick: () -> Unit) {
                 text = character.name,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .fillMaxWidth()

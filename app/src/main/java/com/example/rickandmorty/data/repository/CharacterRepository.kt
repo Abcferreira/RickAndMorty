@@ -1,4 +1,9 @@
-package com.example.rickandmorty
+package com.example.rickandmorty.data.repository
+
+import com.example.rickandmorty.data.mappers.mapToDomain
+import com.example.rickandmorty.data.remote.ApiService
+import com.example.rickandmorty.domain.model.CharacterEntity
+import com.example.rickandmorty.domain.repository.ICharacterRepository
 
 class CharacterRepository(private val apiService: ApiService): ICharacterRepository {
 
