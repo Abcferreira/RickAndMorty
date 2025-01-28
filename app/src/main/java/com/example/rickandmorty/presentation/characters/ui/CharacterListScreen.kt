@@ -3,44 +3,55 @@ package com.example.rickandmorty.presentation.characters.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.airbnb.lottie.compose.*
+import com.example.rickandmorty.R
 import com.example.rickandmorty.domain.model.CharacterEntity
 import com.example.rickandmorty.presentation.characters.viewmodel.CharacterViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun CharacterListScreen(characterViewModel: CharacterViewModel, navController: NavController) {
     val characters by characterViewModel.characters.collectAsState()
     val loading by characterViewModel.loading.collectAsState()
+    val hasMorePages by characterViewModel.hasMorePages.collectAsState()
+
+    val gridState = rememberLazyGridState()
+    val coroutineScope = rememberCoroutineScope()
+
+    val isAtEnd by remember {
+        derivedStateOf {
+            val lastVisibleItem = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleItem >= (characters.size - 1) // Verifica se está no último item
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF2A2A72))
-                .padding(vertical = 16.dp),
+                .background(Color(0xFF39FF14))
+                .padding(vertical = 24.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -49,11 +60,12 @@ fun CharacterListScreen(characterViewModel: CharacterViewModel, navController: N
                 textAlign = TextAlign.Center
             )
         }
-        Box(modifier = Modifier.fillMaxSize()) {
-            if (loading) {
-                LoadingAnimation()
+        Box(modifier = Modifier.fillMaxSize().background(Color.LightGray)) {
+            if (loading && characters.isEmpty()) {
+                LottieLoadingAnimation()
             } else {
                 LazyVerticalGrid(
+                    state = gridState,
                     columns = GridCells.Fixed(2),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -64,9 +76,58 @@ fun CharacterListScreen(characterViewModel: CharacterViewModel, navController: N
                             navController.navigate("character_detail/${character.id}")
                         }
                     }
+
+                    // Botão dinâmico no final da lista
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            DynamicButton(
+                                text = if (!hasMorePages && isAtEnd) "Voltar ao topo" else "Carregar mais",
+                                onClick = {
+                                    if (!hasMorePages && isAtEnd) {
+                                        coroutineScope.launch {
+                                            gridState.animateScrollToItem(0)
+                                        }
+                                    } else {
+                                        characterViewModel.loadNextPage()
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
+    }
+}
+
+
+
+@Composable
+fun DynamicButton(
+    text: String,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleMedium.copy(color = Color.White),
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.primary)
+                .clickable { onClick() }
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -76,16 +137,18 @@ fun CharacterCard(character: CharacterEntity, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .background(Color.LightGray),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            containerColor = Color.DarkGray,
+            contentColor = Color.White
         )
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Box(
                 modifier = Modifier
@@ -95,8 +158,11 @@ fun CharacterCard(character: CharacterEntity, onClick: () -> Unit) {
                 Image(
                     painter = rememberAsyncImagePainter(character.image),
                     contentDescription = character.name,
-                    modifier = Modifier.fillMaxSize()
-                )
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(16.dp)),
+
+                    )
             }
 
             Text(
@@ -114,16 +180,25 @@ fun CharacterCard(character: CharacterEntity, onClick: () -> Unit) {
     }
 }
 
+
 @Composable
-fun LoadingAnimation() {
+fun LottieLoadingAnimation() {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.drink_rick))
+
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "Carregando...",
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier.size(300.dp)
         )
     }
 }
+

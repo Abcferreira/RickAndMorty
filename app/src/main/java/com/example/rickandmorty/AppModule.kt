@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit
 
 val appModule = module {
 
-    // OkHttpClient
     single {
         OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -21,23 +20,20 @@ val appModule = module {
             .build()
     }
 
-    // Retrofit
     single {
         Retrofit.Builder()
             .baseUrl("https://rickandmortyapi.com/api/")
             .addConverterFactory(GsonConverterFactory.create())
-            .client(get()) // Usando OkHttpClient injetado
+            .client(get())
             .build()
     }
 
-    // ApiService
     single {
         get<Retrofit>().create(ApiService::class.java)
     }
 
-    // Repositório
     single { CharacterRepository(get()) }
 
-    // ViewModel
+
     viewModel { CharacterViewModel(get()) }
 }

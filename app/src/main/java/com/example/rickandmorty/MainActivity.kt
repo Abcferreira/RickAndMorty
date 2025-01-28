@@ -16,7 +16,7 @@ import androidx.navigation.navArgument
 import com.example.rickandmorty.presentation.characterdetails.ui.CharacterDetailScreen
 import com.example.rickandmorty.presentation.characters.ui.CharacterListScreen
 import com.example.rickandmorty.presentation.characters.viewmodel.CharacterViewModel
-import com.example.rickandmorty.presentation.characters.ui.LoadingAnimation
+import com.example.rickandmorty.presentation.characters.ui.LottieLoadingAnimation
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -37,11 +37,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-        characterViewModel.fetchCharacters()
-    }
 }
 
 @Composable
@@ -50,15 +45,15 @@ fun AppNavigation(navController: NavHostController, characterViewModel: Characte
         navController = navController,
         startDestination = "character_list"
     ) {
-        composable("character_list") {
+        composable(route = "character_list") {
             CharacterListScreen(
                 characterViewModel = characterViewModel,
                 navController = navController
             )
         }
         composable(
-            "character_detail/{characterId}",
-            arguments = listOf(navArgument("characterId") { type = NavType.IntType })
+            route = "character_detail/{characterId}",
+            arguments = listOf(navArgument(name = "characterId") { type = NavType.IntType })
         ) { backStackEntry ->
             val characterId = backStackEntry.arguments?.getInt("characterId")
             if (characterId != null) {
@@ -67,9 +62,11 @@ fun AppNavigation(navController: NavHostController, characterViewModel: Characte
 
             val character by characterViewModel.selectedCharacter.collectAsState()
             if (character != null) {
-                CharacterDetailScreen(character = character)
+                character?.let {
+                    CharacterDetailScreen(character = it)
+                }
             } else {
-                LoadingAnimation()
+                LottieLoadingAnimation()
             }
         }
     }
