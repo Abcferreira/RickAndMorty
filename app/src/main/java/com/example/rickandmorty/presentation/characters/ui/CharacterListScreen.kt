@@ -42,7 +42,7 @@ fun CharacterListScreen(characterViewModel: CharacterViewModel, navController: N
     val isAtEnd by remember {
         derivedStateOf {
             val lastVisibleItem = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisibleItem >= (characters.size - 1) // Verifica se está no último item
+            lastVisibleItem >= (characters.size - 1)
         }
     }
 
@@ -77,7 +77,6 @@ fun CharacterListScreen(characterViewModel: CharacterViewModel, navController: N
                         }
                     }
 
-                    // Botão dinâmico no final da lista
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Box(
                             modifier = Modifier
