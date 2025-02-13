@@ -25,13 +25,13 @@ fun CharacterResponse.mapToDomain() =
         url = url
     )
 
-private fun LocationResponse.mapToDomain() =
+fun LocationResponse.mapToDomain() =
     LocationEntity(
         name = name,
         url = url
     )
 
-private fun OriginResponse.mapToDomain() =
+fun OriginResponse.mapToDomain() =
     OriginEntity(
         name = name,
         url = url

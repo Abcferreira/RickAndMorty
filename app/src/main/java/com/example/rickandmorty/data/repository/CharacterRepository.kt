@@ -10,8 +10,7 @@ class CharacterRepository(private val apiService: ApiService): ICharacterReposit
     override suspend fun fetchCharacters(page: Int): List<CharacterEntity> {
         val response = apiService.getCharacters(page)
         return if (response.characters.isNotEmpty()) {
-            val charactersList = response.characters.mapToDomain()
-            charactersList
+            response.characters.mapToDomain()
         } else {
             emptyList()
         }

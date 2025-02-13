@@ -2,6 +2,7 @@ package com.example.rickandmorty
 
 import com.example.rickandmorty.data.remote.ApiService
 import com.example.rickandmorty.data.repository.CharacterRepository
+import com.example.rickandmorty.domain.repository.ICharacterRepository
 import com.example.rickandmorty.presentation.characters.viewmodel.CharacterViewModel
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.viewModel
@@ -32,7 +33,7 @@ val appModule = module {
         get<Retrofit>().create(ApiService::class.java)
     }
 
-    single { CharacterRepository(get()) }
+    factory <ICharacterRepository> { CharacterRepository(get()) }
 
 
     viewModel { CharacterViewModel(get()) }

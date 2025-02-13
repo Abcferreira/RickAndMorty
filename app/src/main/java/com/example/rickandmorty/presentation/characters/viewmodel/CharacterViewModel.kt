@@ -1,18 +1,17 @@
 package com.example.rickandmorty.presentation.characters.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rickandmorty.data.repository.CharacterRepository
 import com.example.rickandmorty.data.mappers.createCharacterEntity
 import com.example.rickandmorty.domain.model.CharacterEntity
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
+import com.example.rickandmorty.domain.repository.ICharacterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class CharacterViewModel(
-    private val characterRepository: CharacterRepository
+    private val characterRepository: ICharacterRepository
 ) : ViewModel() {
 
     private val _loading = MutableStateFlow(false)
@@ -27,7 +26,9 @@ class CharacterViewModel(
     private val _hasMorePages = MutableStateFlow(true)
     val hasMorePages: StateFlow<Boolean> = _hasMorePages
 
-    private var currentPage = 1
+    @VisibleForTesting
+    internal var currentPage: Int = 1
+        private set
 
     init {
         fetchCharacters()
@@ -40,10 +41,9 @@ class CharacterViewModel(
         }
     }
 
-    private fun fetchCharacters(page: Int = 1) {
+    fun fetchCharacters(page: Int = 1) {
         viewModelScope.launch {
             _loading.value = true
-            delay(5000)
             try {
                 val newCharacters = characterRepository.fetchCharacters(page)
 
@@ -60,7 +60,6 @@ class CharacterViewModel(
         }
     }
 
-
     fun fetchCharacterById(characterId: Int) {
         viewModelScope.launch {
             _loading.value = true
@@ -69,7 +68,4 @@ class CharacterViewModel(
             _loading.value = false
         }
     }
-
 }
-
-
