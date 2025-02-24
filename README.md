@@ -68,22 +68,6 @@ Este é um aplicativo Android que exibe uma lista de personagens do universo *Ri
 - **Coil**: Biblioteca para carregamento de imagens.
 - **Coroutines**: Para operações assíncronas.
 
-## Contribuições 💡
-
-Se você deseja contribuir para o projeto, siga os seguintes passos:
-
-1. Faça um fork do repositório.
-2. Crie uma branch para a sua feature:
-   ```bash
-   git checkout -b feature/nova-feature
-3. Commit suas mudanças:
-    ```bash
-    git commit -m 'Adicionando nova feature'
-4. Envie para o seu fork:
-    ```bash
-    git push origin feature/nova-feature
-5. Abra um Pull Request.
-
 
 ## Licença
 
